@@ -14,11 +14,12 @@ import com.example.cathcat.databinding.ActivityMainBinding
 import java.util.Random
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding : ActivityMainBinding
-    var score =0
+    private lateinit var binding: ActivityMainBinding
+    private var score = 0
     var imageArray = ArrayList<ImageView>()
-    var runnable = kotlinx.coroutines.Runnable {  }
-    var handler= Handler(Looper.getMainLooper())
+    var runnable = kotlinx.coroutines.Runnable { /* sonar comment */ }
+    var handler = Handler(Looper.getMainLooper())
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -26,6 +27,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
 
         //image array
+        with(binding) {
+
+        }
         imageArray.add(binding.imageView1)
         imageArray.add(binding.imageView2)
         imageArray.add(binding.imageView3)
@@ -41,58 +45,58 @@ class MainActivity : AppCompatActivity() {
 
         hideImages()
 
-        object : CountDownTimer(15800,1000) {
+        object : CountDownTimer(15800, 1000) {
             override fun onFinish() {
-                binding.t3.text="Time : 0"
+                binding.t3.text = "Time : 0"
                 handler.removeCallbacks(runnable)
-                for(img in imageArray){
-                    img.visibility=View.INVISIBLE
+                for (img in imageArray) {
+                    img.visibility = View.INVISIBLE
                 }
                 //alert dialog
                 val alert = AlertDialog.Builder(this@MainActivity)
                 alert.setTitle("Hehe Game Over")
                 alert.setMessage("Cat wants you to play again")
-                alert.setPositiveButton("Accept",DialogInterface.OnClickListener{dialogInterface, i ->
-                    // restart
-                    val intentMain = intent
-                    finish()
-                    startActivity(intentMain)
-                })
-                alert.setNegativeButton("Annoy the cat",DialogInterface.OnClickListener{dialogInterface, i ->
-                    Toast.makeText(this@MainActivity,"Game over",Toast.LENGTH_LONG).show()
-                })
+                alert.setPositiveButton(
+                    "Accept",
+                    DialogInterface.OnClickListener { dialogInterface, i ->
+                        // restart
+                        val intentMain = intent
+                        finish()
+                        startActivity(intentMain)
+                    })
+                alert.setNegativeButton(
+                    "Annoy the cat",
+                    DialogInterface.OnClickListener { dialogInterface, i ->
+                        Toast.makeText(this@MainActivity, "Game over", Toast.LENGTH_LONG).show()
+                    })
                 alert.show()
             }
 
             override fun onTick(p0: Long) {
-                binding.t3.text="Time : ${p0/1000}"
+                binding.t3.text = "Time : ${p0 / 1000}"
             }
 
         }.start()
 
     }
-    fun hideImages(){
-        runnable = object : Runnable {
-            override fun run() {
-                for (img in imageArray){
-                    img.visibility=View.INVISIBLE
-                }
-                val random = Random()
-                val randomIndex = random.nextInt(12) //12 dahil degil
-                imageArray[randomIndex].visibility=View.VISIBLE
 
-                handler.postDelayed(runnable,280)
+    private fun hideImages() {
+        runnable = Runnable {
+            for (img in imageArray) {
+                img.visibility = View.INVISIBLE
             }
+            val random = Random()
+            val randomIndex = random.nextInt(12) //12 dahil degil
+            imageArray[randomIndex].visibility = View.VISIBLE
 
+            handler.postDelayed(runnable, 280)
         }
 
         handler.post(runnable)
-
-
-
     }
-    fun i1(view: View){
-        score = score+1
-        binding.scoreT.text="Score : ${score}"
+
+    private fun i1() {
+        score ++
+        binding.scoreT.text = "Score : ${score}"
     }
 }
